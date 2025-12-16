@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "target": "ES6",
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+, "components/auth/login-form.jsx", "components/auth/register-form.jsx", "app/page.jsx", "components/screens/analysis-screen.jsx", "components/screens/league-screen.jsx", "components/screens/profile-screen.jsx", "components/screens/quiz-screen.jsx", "components/screens/subjects-screen.jsx", "components/screens/units-screen.jsx", "components/screens/results-screen.jsx", "components/navigation/bottom-nav.jsx", "components/navigation/nav-button.jsx", "components/navigation/top-header.jsx", "hooks/use-quiz.js", "app/home/layout.jsx"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
