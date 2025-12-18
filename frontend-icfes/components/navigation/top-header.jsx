@@ -30,7 +30,7 @@ export function TopHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-background">
+    <header className="sticky top-0 z-999 bg-background">
       <div className="container max-w-2xl mx-auto px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center">

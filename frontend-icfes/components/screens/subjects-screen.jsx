@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getMaterias } from "@/services/subjectsService";
+import { getMaterias } from "@/services/estudiante/apiMateriasService";
 
 export function SubjectsScreen() {
   const [subjects, setSubjects] = useState([]);
@@ -14,10 +14,9 @@ export function SubjectsScreen() {
       try {
         const data = await getMaterias();
         const formatted = data.map((m) => ({
-          id: m.id_materia,
+          id: m.id,
           name: m.nombre,
-          icon: m.icono_url,
-          color: m.color_css,
+          imagen: m.url_imagen_ilustrativa,
         }));
 
         setSubjects(formatted);
@@ -49,8 +48,8 @@ export function SubjectsScreen() {
             onClick={() => router.push(`/home/${subject.id}`,)}
             className={`transform transition-all duration-200 ease-in-out hover:translate-y-1 hover:shadow-sm active:translate-y-2 active:scale-95 active:shadow-none active:border-b-[3px] flex flex-row sm:flex-col gap-5 sm:gap-0 w-full items-center bg-background text-blue-400 font-bold py-4 px-4 rounded-sm border-b-[7px] border-t-2 border-x-2 border-border-secundary text-lg`}
           >
-            {subject.icon && (
-              <img className="w-40 rounded-sm p-2 bg-blue-100" src={subject.icon}/>
+            {subject.imagen && (
+              <img className="w-40 rounded-sm p-2 bg-blue-100" src={subject.imagen}/>
             )}
             <div className="flex-1 text-left sm:text-center py-4">
               <h3 className="text-lg font-bold text-white">{subject.name}</h3>

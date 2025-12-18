@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Mail, KeyRound } from "lucide-react";
 import { login } from "@/services/authService";
+import { Alert, notification } from "antd"
+
 
 export function LoginForm({ onLogin, onSwitchToRegister }) {
   const [email, setEmail] = useState("");
@@ -15,17 +17,32 @@ export function LoginForm({ onLogin, onSwitchToRegister }) {
 
     try {
       const user = await login(email, password);
-      localStorage.setItem("user", JSON.stringify(user));
-      onLogin(email, password);
+      onLogin(user);
+      
     } catch (error) {
-      onLogin("w.tovar@utp.edu.co", "23");
-    }
+      const detail =
+        error?.response?.data?.detail ?? error?.detail ?? error?.message;
 
-    setLoading(false);
+      if (
+        detail ===
+        "No active account found with the given credentials"
+      ) {
+        notification.error({
+          title: "Correo o contraseña incorrecta",
+        });
+      } else {
+        notification.error({
+          title: "Error al iniciar sesión. Inténtalo de nuevo.",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-md mx-auto h-full bg-background flex justify-center flex-col">
+
       {/* Título */}
       <h1 className="text-3xl font-bold text-white text-center mb-8">
         Ingresar
@@ -37,7 +54,9 @@ export function LoginForm({ onLogin, onSwitchToRegister }) {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             placeholder="Correo o usuario"
             className="w-full px-4 py-4 bg-transparent border-2 border-gray-600 rounded-2xl 
                        text-white placeholder-gray-400 focus:outline-none focus:border-blue-400
@@ -51,7 +70,9 @@ export function LoginForm({ onLogin, onSwitchToRegister }) {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             placeholder="Contraseña"
             className="w-full px-4 py-4 bg-transparent border-2 border-gray-600 rounded-2xl 
                        text-white placeholder-gray-400 focus:outline-none focus:border-blue-400

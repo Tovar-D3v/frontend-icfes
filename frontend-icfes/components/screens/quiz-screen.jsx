@@ -8,7 +8,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-// 🔹 Limpia HTML para lectura por voz
 function stripHTML(html) {
   if (!html) return "";
   return html.replace(/<[^>]*>?/gm, "");
@@ -20,12 +19,13 @@ export function QuizScreen({
   lives,
   showFeedback,
   isCorrect,
+  explicacion,
   onSelectAnswer,
   onCheckAnswer,
   onContinueQuiz,
   onExit,
 }) {
-  const { speak, cancel, speaking } = useSpeechSynthesis();
+  const { speak, cancel } = useSpeechSynthesis();
 
   const activeQuiz = quizState;
 
@@ -52,7 +52,7 @@ export function QuizScreen({
   const opcionCorrecta = currentQuestion.opciones.find((o) => o.es_correcta);
   const respuestaCorrecta = opcionCorrecta?.texto ?? "";
 
-  const explicacion = !isCorrect
+  const generatedExplicacion = !isCorrect
     ? `Tu respuesta no coincide con el significado correcto. "${respuestaCorrecta}" es la opción adecuada porque se ajusta al contexto de la pregunta.`
     : "";
 
@@ -162,9 +162,8 @@ export function QuizScreen({
                 </p>
 
                 <div className="flex items-center gap-4">
-                  <p className="text-red-400 text-md flex-1">
-                    {explicacion}
-                  </p>
+                  <div dangerouslySetInnerHTML={{ __html: explicacion || generatedExplicacion }} />
+                  
                   <img
                     src="https://res.cloudinary.com/dulrdwjul/image/upload/v1765573355/Gemini_Generated_Image_t1nygwt1nygwt1ny_20251208130701_i2eqb4_nfonhm.webp"
                     className="w-28 h-28 object-contain rounded-md"

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export function Tarjet({ unidad_id, level, title, description, exp }) {
+export function Tarjet({ unidad_id, dificultad, title, description, exp }) {
   const router = useRouter();
 
   const handleStart = () => {
@@ -15,9 +15,9 @@ export function Tarjet({ unidad_id, level, title, description, exp }) {
       <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-pink-500"></div>
 
       <div className="flex flex-col ">
-        <p className="text-lg mb-2">{title}</p>
-        <p>{description || ""}</p>
-        <p className="text-sm">{level || ""}</p>
+        <p className="text-lg ">{title}</p>
+        <p className=" opacity-80">10 Preguntas</p>
+        <p className="text-sm font-bold">Dificultad: {dificultad || ""}</p>
       </div>
 
       <button

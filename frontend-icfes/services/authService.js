@@ -1,22 +1,20 @@
 import config from "@/config/config";
-const API_URL = `${config}/api/auth`; 
+const API_URL = config.API_BASE_URL;
 
 export async function login(email, password) {
   try {
-    const response = await fetch(`${API_URL}/login/`, {
+    const response = await fetch(`${API_URL}/api/login/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, password }),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Error al iniciar sesión");
-    }
+    if (!response.ok) throw new Error(data.error || "Error al iniciar sesión");
 
+    localStorage.setItem("token", data.access);
+    localStorage.setItem("refresh", data.refresh);
     localStorage.setItem("usuario", JSON.stringify(data.user));
 
     return data.user;

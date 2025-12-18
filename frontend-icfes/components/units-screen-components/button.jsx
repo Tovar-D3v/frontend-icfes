@@ -1,3 +1,5 @@
+import { Rate } from "antd";
+
 export function ButtonUnits({ onClick, disabled, icon, completed }) {
   const src = completed
     ? "https://d35aaqx5ub95lt.cloudfront.net/images/path/icons/bfa591f6854b4de08e1656b3e8ca084f.svg"
@@ -18,7 +20,7 @@ export function ButtonUnits({ onClick, disabled, icon, completed }) {
       <img
         src={src}
         alt={completed ? "completed" : "icon"}
-        className="w-10 h-10 select-none pointer-events-none"
+        className="w-10 h-10 select-none pointer-events-none "
       />
     </button>
   );

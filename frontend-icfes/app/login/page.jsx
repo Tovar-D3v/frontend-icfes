@@ -8,10 +8,8 @@ import { LoginForm } from "@/components/auth/login-form";
 export default function LoginRoutePage() {
     const router = useRouter();
 
-    const handleLogin = (email, password) => {
-        if (email && password) {
-            router.push("/home");
-        }
+    const handleLogin = () => {
+        router.push("/home");
     };
 
     return (

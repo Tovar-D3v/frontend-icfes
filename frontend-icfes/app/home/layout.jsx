@@ -13,7 +13,7 @@ export default function HomeLayout({ children }) {
       />
 
       {/* PAGE CONTENT */}
-      <main className="container max-w-2xl mx-auto px-4 flex-1">
+      <main className="container max-w-2xl mx-auto px-4 flex-1 flex flex-col overflow-hidden">
         {children}
       </main>
 
