@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export function Tarjet({ unidad_id, dificultad, title, description, exp }) {
+export function Tarjet({ unidad_id, dificultad, title, exp, completado }) {
   const router = useRouter();
 
   const handleStart = () => {
@@ -21,10 +21,11 @@ export function Tarjet({ unidad_id, dificultad, title, description, exp }) {
       </div>
 
       <button
+        // disabled={completado}
         onClick={handleStart}
-        className="bg-white text-pink-600 font-bold py-2 px-4 rounded-sm w-full shadow-[0_4px_0_#f0c8df] active:shadow-[0_1px_0_#b7e6b7] active:translate-y-[3px] transition-all"
+        className={`${completado ? "bg-white text-pink-600" : "bg-white text-pink-600"}  font-bold py-2 px-4 rounded-sm w-full shadow-[0_4px_0_#f0c8df] active:shadow-[0_1px_0_#b7e6b7] active:translate-y-[3px] transition-all`}
       >
-        EMPEZAR +{exp} EXP
+        {completado ? "COMPLETADO" : `EMPEZAR +${exp} EXP`}
       </button>
     </div>
   );

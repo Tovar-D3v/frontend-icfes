@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 export function AuthSelection() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen w-full px-6 py-7">
-
       {/* Logo */}
       <motion.div
         initial={{ y: -60, opacity: 0 }}
@@ -54,17 +53,17 @@ export function AuthSelection() {
         className="w-full max-w-sm space-y-4"
       >
         <Link
-          href="/register"
-          className="flex gap-4 bg-primary hover:bg-primary/90 p-4 w-full rounded-sm shadow-[0_4px_0_#58a701] items-center justify-center text-lg font-bold text-white"
-        >
-          EMPIEZA AHORA
-        </Link>
-
-        <Link
           href="/login"
           className="w-full inline-flex items-center justify-center bg-white hover:bg-gray-100 text-blue-400 font-bold py-4 px-6 rounded-sm shadow-[0_4px_0_#0003] border-2 border-border text-lg transition-all"
         >
           YA TENGO UNA CUENTA
+        </Link>
+
+        <Link
+          href="/register"
+          className="flex gap-4 bg-primary hover:bg-primary/90 p-4 w-full rounded-sm shadow-[0_4px_0_#58a701] items-center justify-center text-lg font-bold text-white"
+        >
+          REGISTRATE AHORA
         </Link>
       </motion.div>
     </div>

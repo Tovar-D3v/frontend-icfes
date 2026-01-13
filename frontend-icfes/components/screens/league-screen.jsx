@@ -11,13 +11,7 @@ export function LeagueScreen() {
   const nextLeague = currentUser
     ? LEAGUES.find((l) => l.minXp > currentUser.xp)
     : null;
-  const xpToNextLeague = nextLeague ? nextLeague.minXp - currentUser.xp : 0;
-  const progressToNextLeague =
-    nextLeague && currentLeague
-      ? ((currentUser.xp - currentLeague.minXp) /
-          (nextLeague.minXp - currentLeague.minXp)) *
-        100
-      : 100;
+
 
   if (!currentUser || !currentLeague) {
     return <div>Error: No se pudo cargar la información de la liga.</div>;

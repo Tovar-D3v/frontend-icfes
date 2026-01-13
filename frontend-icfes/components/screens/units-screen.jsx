@@ -115,7 +115,6 @@ export function UnitsScreen({ idMateria, onBack }) {
           <div className="flex flex-row sm:flex-row justify-between items-center gap-4">
             <div>
               <div className="text-sm opacity-90 flex gap-2 items-center">
-               
                 <span className="font-bold text-foreground opacity-80 uppercase text-sm">
                   SECCIÓN {activeSectionIndex + 1}: {activeSection?.nombre}
                 </span>
@@ -231,7 +230,7 @@ export function UnitsScreen({ idMateria, onBack }) {
                 <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-3">
                   <span className="text-sm font-extrabold opacity-50 uppercase">
                     SECCIÓN {secIndex + 2}:{" "}
-                    {contenidoMateria.secciones[secIndex + 1].nombre}
+                   
                   </span>
                 </div>
               </div>

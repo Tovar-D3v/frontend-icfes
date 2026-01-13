@@ -43,6 +43,7 @@
   --duolingo-yellow: #ffc800;
   --duolingo-red: #ee5555;
   --boder-button: #0003;
+  --border-default: #d1d5db42;
 
   /* Colores */
   --color-text-green: #79b933;
@@ -84,6 +85,7 @@
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
   --border-button: #0003;
+  --border-default: #d1d5db42;
 
     /* Colores */
     --color-text-green: #79b933;
@@ -134,6 +136,7 @@
   --color-duolingo-yellow: var(--duolingo-yellow);
   --color-duolingo-red: var(--duolingo-red);
   --border-button: var(--boder-button);
+  --border-default: var(--border-default);
 
   /* Colores */
   --color-text-green: var(--color-text-green);
@@ -193,6 +196,32 @@
 }
 
 
+.card-base {
+  display: flex;
+  width: 100%;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+
+  border-color: #d1d5db42;
+  border-style: solid;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-right-width: 2px;
+  border-bottom-width: 4px;
+  cursor: pointer;
+}
+
+.border-card {
+  border-style: solid;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-right-width: 2px;
+  border-bottom-width: 4px;
+}
+
+
 .quiz-option-default {
   background-color: transparent; 
   border-color: var(--color-border-secundary);
@@ -218,6 +247,11 @@
 }
 
 
+.quiz-option-regular {
+  background-color: rgba(255, 199, 0, 0.1); 
+  border-color: var(--color-duolingo-yellow);
+}
+
 .quiz-option-incorrect-selected {
   background-color: rgba(255, 71, 71, 0.1); 
   border-color: var(--color-duolingo-red);
@@ -228,4 +262,14 @@
   opacity: 0.5;
   background-color: transparent;
   border-color: var(--color-border-secundary);
+}
+
+.custom-scroll {
+  scrollbar-width: thin; /* Firefox: hace el scrollbar más estrecho */
+  scrollbar-color: #c4c4c4 transparent; /* thumb color y track color en Firefox */
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 8px; /* ancho del scrollbar */
+  height: 8px;
 }

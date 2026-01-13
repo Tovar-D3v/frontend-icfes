@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -7,7 +6,7 @@ import { TopHeaderRight } from "@/components/navigation/top-header-right";
 import { BottomNav } from "@/components/navigation/bottom-nav";
 import { LeftNav } from "@/components/navigation/left-nav";
 
-export default function HomeLayout({ children }) {
+export default function DashboardIdLayout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

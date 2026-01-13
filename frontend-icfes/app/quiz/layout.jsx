@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { TopHeader } from "@/components/navigation/top-header";
-import { BottomNav } from "@/components/navigation/bottom-nav";
 
 export default function QuizLayout({ children }) {
 

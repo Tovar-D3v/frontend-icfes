@@ -1,16 +1,42 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { BarraProgreso } from "@/components/quiz/barra-progreso";
 import { Volume2 } from "lucide-react";
 import { useSpeechSynthesis } from "react-speech-kit";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import UnicaRespuesta from "@/components/screens/tipos-preguntas/unica-respuesta";
+import Relacion from "@/components/screens/tipos-preguntas/relacion";
 
 function stripHTML(html) {
   if (!html) return "";
   return html.replace(/<[^>]*>?/gm, "");
+}
+
+function toEmbedUrl(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "").toLowerCase();
+
+    if (host === "youtu.be") {
+      const id = u.pathname.slice(1);
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+
+    if (host.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return `https://www.youtube.com/embed/${v}`;
+      const parts = u.pathname.split("/").filter(Boolean);
+      const id = parts.length ? parts[parts.length - 1] : null;
+      if (parts.includes("embed") || parts.includes("shorts")) {
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+    }
+
+    return url;
+  } catch (e) {
+    return null;
+  }
 }
 
 export function QuizScreen({
@@ -20,18 +46,25 @@ export function QuizScreen({
   showFeedback,
   isCorrect,
   explicacion,
+  videoExplicacion,
   onSelectAnswer,
   onCheckAnswer,
   onContinueQuiz,
   onExit,
 }) {
   const { speak, cancel } = useSpeechSynthesis();
-
+  console.log("QuizScreen render with quizState:", quizState);
   const activeQuiz = quizState;
+
+  const [relacionComplete, setRelacionComplete] = useState(false);
+
+  useEffect(() => {
+    setRelacionComplete(false);
+  }, [activeQuiz?.currentQuestionIndex]);
 
   if (!activeQuiz || !activeQuiz.questions || activeQuiz.questions.length === 0) {
     return (
-      <div className="text-center text-red-500">
+      <div className="text-center text-red-500 min-h-screen flex items-center justify-center">
         No hay preguntas disponibles. Por favor, intenta nuevamente.
       </div>
     );
@@ -56,7 +89,6 @@ export function QuizScreen({
     ? `Tu respuesta no coincide con el significado correcto. "${respuestaCorrecta}" es la opción adecuada porque se ajusta al contexto de la pregunta.`
     : "";
 
-  // 🔊 Función de lectura
   const leerPreguntaYOpciones = () => {
     cancel();
 
@@ -91,7 +123,7 @@ export function QuizScreen({
             />
           </div>
         )}
-
+        <div className=" col-start-1"></div>
         <div className="flex items-start gap-2">
           <button
             onClick={leerPreguntaYOpciones}
@@ -107,45 +139,27 @@ export function QuizScreen({
           />
         </div>
 
-        <div className="space-y-3">
-          {currentQuestion.opciones.map((opcion, index) => {
-            const isSelected = selectedAnswer === index;
-            const isCorrectOption = !!opcion.es_correcta;
-
-            let stateClass = "";
-
-            if (!showFeedback) {
-              stateClass = isSelected
-                ? "quiz-option-selected"
-                : "quiz-option-default";
-            } else {
-              if (isCorrectOption) {
-                stateClass = "quiz-option-correct";
-              } else if (isSelected) {
-                stateClass = "quiz-option-incorrect-selected";
-              } else {
-                stateClass = "quiz-option-disabled";
-              }
-            }
-
-            return (
-              <button
-                type="button"
-                key={opcion.id ?? index}
-                onClick={() => !showFeedback && onSelectAnswer(index)}
-                disabled={showFeedback}
-                aria-pressed={isSelected}
-                className={classNames("quiz-option-base", stateClass)}
-              >
-                {opcion.texto}
-              </button>
-            );
-          })}
-        </div>
+        {currentQuestion.tipo_pregunta &&
+        currentQuestion.tipo_pregunta.toLowerCase().includes("relacion") ? (
+          <Relacion
+            opciones={currentQuestion.opciones}
+            selectedAnswer={selectedAnswer}
+            showFeedback={showFeedback}
+            onSelectAnswer={onSelectAnswer}
+            onPairsChange={setRelacionComplete}
+          />
+        ) : (
+          <UnicaRespuesta
+            opciones={currentQuestion.opciones}
+            selectedAnswer={selectedAnswer}
+            showFeedback={showFeedback}
+            onSelectAnswer={onSelectAnswer}
+          />
+        )}
       </div>
 
       <div
-        className={`sticky bottom-0 rounded-t-sm ${
+        className={`sticky bottom-0 rounded-t-sm z-50 ${
           showFeedback ? "bg-card" : "bg-background"
         } left-0 pt-3 pb-4 px-4 flex flex-col gap-4`}
       >
@@ -158,16 +172,23 @@ export function QuizScreen({
             ) : (
               <div>
                 <p className="text-red-500 font-bold text-lg mb-1">
-                  Solución correcta:
+                  Solución correcta: {}
                 </p>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-col max-h-72 overflow-y-auto custom-scroll">
                   <div dangerouslySetInnerHTML={{ __html: explicacion || generatedExplicacion }} />
-                  
-                  <img
-                    src="https://res.cloudinary.com/dulrdwjul/image/upload/v1765573355/Gemini_Generated_Image_t1nygwt1nygwt1ny_20251208130701_i2eqb4_nfonhm.webp"
-                    className="w-28 h-28 object-contain rounded-md"
-                  />
+                  {videoExplicacion && (
+                    <div className=" w-full min-h-60 flex justify-center items-center">
+                      <iframe
+                        src={toEmbedUrl(videoExplicacion)}
+                        title="Video Explicación"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className=" w-full min-h-60 rounded-sm"
+                      ></iframe>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -176,7 +197,13 @@ export function QuizScreen({
 
         <button
           onClick={showFeedback ? onContinueQuiz : onCheckAnswer}
-          disabled={selectedAnswer === null && !showFeedback}
+          disabled={
+            !showFeedback &&
+            (currentQuestion.tipo_pregunta &&
+            currentQuestion.tipo_pregunta.toLowerCase().includes("relacion")
+              ? !relacionComplete
+              : selectedAnswer === null)
+          }
           className={`w-full py-3 rounded-sm font-bold transition-all ${
             selectedAnswer === null && !showFeedback
               ? "bg-gray-700 border-b-4 border-gray-800 text-gray-400"
