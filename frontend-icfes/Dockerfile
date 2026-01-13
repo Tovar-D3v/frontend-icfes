@@ -2,14 +2,16 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copia lockfile y package para aprovechar cache de dependencias
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copia package-lock y package para aprovechar cache de dependencias
 COPY package.json package-lock.json next.config.mjs ./
 
-# Copia el resto del código
-COPY . .
-
-# Instala dependencias de build y construye la app
+# Instala dependencias (incluye dev para build)
 RUN npm ci
+
+# Copia el resto del código y construye
+COPY . .
 RUN npm run build
 
 # Stage de producción
@@ -17,6 +19,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=4000
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copia package para instalar solo deps de producción
 COPY package.json package-lock.json ./
