@@ -1,24 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, KeyRound } from "lucide-react";
 import { login } from "@/services/authService";
-import { Alert, notification } from "antd"
+import { notification } from "antd"
+import { useAuth } from "@/context/auth-context";
+
 
 
 export function LoginForm({ onLogin, onSwitchToRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user, setTokens, setRefreshToken } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const user = await login(email, password);
-      onLogin(user);
-      
+      const response = await login(email, password);
+      console.log("Login response:", response);
+
+      if (response?.access || response?.refresh) {
+        setTokens(response.access, response.refresh);
+      }
+
+      onLogin(response);
     } catch (error) {
       const detail =
         error?.response?.data?.detail ?? error?.detail ?? error?.message;
@@ -34,6 +41,7 @@ export function LoginForm({ onLogin, onSwitchToRegister }) {
         notification.error({
           title: "Error al iniciar sesión. Inténtalo de nuevo.",
         });
+        console.error("Login error:", error);
       }
     } finally {
       setLoading(false);

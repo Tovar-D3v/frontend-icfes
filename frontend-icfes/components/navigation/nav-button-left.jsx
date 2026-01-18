@@ -8,7 +8,7 @@ export function NavButtonLeft({ iconSrc, label, active, onClick }) {
         active ? "text-primary border border-primary bg-primary/10" : "text-foreground"
       }`}
     >
-      <img src={iconSrc} alt={label} className="w-8 h-8" />
+      <img src={iconSrc} alt={label} className="w-8 h-8 rounded-2xl" />
       <h1>{label}</h1>
     </button>
   );

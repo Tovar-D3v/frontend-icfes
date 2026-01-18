@@ -1,12 +1,5 @@
 import { Rate } from "antd";
-import {
-  BookOpen,
-  Users,
-  BarChart3,
-  AlertTriangle,
-  UserX,
-  TrendingUp,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export function RendimientoCurso({ rendimientoCurso }) {
   if (!rendimientoCurso) return null;
@@ -32,7 +25,7 @@ export function RendimientoCurso({ rendimientoCurso }) {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card-base bg-card flex-col gap-3">
+        <div className="card-base flex-col gap-3">
           <div className="flex items-center gap-2">
             <span>Promedio del curso</span>
           </div>
@@ -43,10 +36,11 @@ export function RendimientoCurso({ rendimientoCurso }) {
             disabled
             allowHalf
             value={estadisticas_globales.promedio_general_curso / 20}
+            rootClassName=" green-rate"
           />
         </div>
 
-        <div className="card-base bg-card flex-col gap-3">
+        <div className="card-base  flex-col gap-3">
           <div className="flex items-center gap-2">
             <span>Estudiantes</span>
           </div>
@@ -58,7 +52,7 @@ export function RendimientoCurso({ rendimientoCurso }) {
           </span>
         </div>
 
-        <div className="card-base bg-card flex-col gap-3">
+        <div className="card-base flex-col gap-3">
           <div className="flex items-center gap-2">
             <span>Intentos totales</span>
           </div>
@@ -72,7 +66,7 @@ export function RendimientoCurso({ rendimientoCurso }) {
       </div>
 
       {/* Ranking */}
-      <div className="card-base bg-card flex-col gap-4">
+      <div className="card-base flex-col gap-4">
         <h3 className="text-lg flex items-center gap-2">
           Rendimiento por estudiante
         </h3>
@@ -92,7 +86,6 @@ export function RendimientoCurso({ rendimientoCurso }) {
 
               <div className="flex items-center gap-3">
                 <span className="text-lg">{est.promedio}</span>
-                
               </div>
             </div>
           ))}
@@ -103,7 +96,11 @@ export function RendimientoCurso({ rendimientoCurso }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card-base bg-card flex-col gap-3">
           <div className="flex items-center gap-2">
-            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/62bb241121ae018b28240eebffb9fc4a.svg" alt="" className="h-8"/>
+            <img
+              src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/62bb241121ae018b28240eebffb9fc4a.svg"
+              alt=""
+              className="h-8"
+            />
             <span>Pregunta más fallada</span>
           </div>
 
@@ -126,7 +123,11 @@ export function RendimientoCurso({ rendimientoCurso }) {
 
         <div className="card-base bg-card flex-col gap-3 justify-between">
           <div className="flex items-center gap-2 ">
-            <img src="https://d35aaqx5ub95lt.cloudfront.net/images/practiceHub/593f4a57e5d843805c3190ec2c93ab29.svg" alt="" className="w-7" />
+            <img
+              src="https://d35aaqx5ub95lt.cloudfront.net/images/practiceHub/593f4a57e5d843805c3190ec2c93ab29.svg"
+              alt=""
+              className="w-7"
+            />
             <span>Tema más difícil</span>
           </div>
 
@@ -135,10 +136,14 @@ export function RendimientoCurso({ rendimientoCurso }) {
           </div>
 
           <button className="quiz-option-base quiz-option-incorrect-selected">
-            Crear Actividad de Refuerzo
+            Crear Actividad
           </button>
         </div>
       </div>
+
+      <button className=" quiz-option-base quiz-option-selected rounded-xl py-4 flex items-center justify-center gap-2 mt-4">
+        Generar Informe Inteligente
+      </button>
     </div>
   );
 }

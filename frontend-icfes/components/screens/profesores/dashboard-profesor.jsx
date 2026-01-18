@@ -28,7 +28,7 @@ export default function DashboardProfesor() {
 
 
   return (
-    <div className="flex-1 overflow-auto min-h-screen px-4 py-6 space-y-6 mb-24">
+    <div className="flex-1 overflow-auto min-h-screen px-4 py-6 space-y-6 mb-24 lg:mb-0">
       
       <RendimientoCurso rendimientoCurso={rendimientoCurso} />
     </div>

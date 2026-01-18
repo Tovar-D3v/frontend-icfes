@@ -6,7 +6,6 @@ export function Tarjet({ unidad_id, dificultad, title, exp, completado }) {
   const router = useRouter();
 
   const handleStart = () => {
-    console.log("Redirigiendo al quiz con id:", unidad_id);
     router.push(`/quiz?unidad_id=${unidad_id}`);
   };
 

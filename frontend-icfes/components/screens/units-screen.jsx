@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { getNivelesByMateria } from "@/services/estudiante/apiNivelesMateriaService";
 import { ButtonUnits } from "@/components/units-screen-components/button";
 import { Tarjet } from "@/components/units-screen-components/tarjet";
-import { Rate } from 'antd'
+import { Rate } from "antd";
 import { RandomImage } from "@/components/units-screen-components/random-image";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +23,20 @@ export function UnitsScreen({ idMateria, onBack }) {
   const [activeUnit, setActiveUnit] = useState(null);
   const containerRef = useRef(null);
   const router = useRouter();
+
+  // detectar vista de escritorio (lg = 1024px)
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e) => setIsDesktop(e.matches);
+    setIsDesktop(m.matches);
+    if (m.addEventListener) m.addEventListener("change", onChange);
+    else m.addListener(onChange);
+    return () => {
+      if (m.removeEventListener) m.removeEventListener("change", onChange);
+      else m.removeListener(onChange);
+    };
+  }, []);
 
   const sectionRefs = useRef([]);
   const headerRef = useRef(null);
@@ -57,7 +71,6 @@ export function UnitsScreen({ idMateria, onBack }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
 
   useEffect(() => {
     function onScroll() {
@@ -101,10 +114,11 @@ export function UnitsScreen({ idMateria, onBack }) {
   const activeSection = contenidoMateria.secciones[activeSectionIndex];
 
   return (
-    <div className="flex-1 overflow-auto min-h-0 from-background to-muted/30 pb-28 px-3 relative">
+    <div className="flex-1 ">
+      {/* titulo road map */}
       <div
         ref={headerRef}
-        className=" mx-auto px-4  z-50 w-full fixed left-0 right-0 overflow-hidden flex items-center justify-center max-w-xl sm:max-w-2xl md:max-w-2xl "
+        className="sticky top-3 z-50 w-full transition-colors duration-300"
       >
         <div
           className="text-primary-foreground p-4 rounded-sm z-50 w-full border-0 border-b-4 border-border"
@@ -140,104 +154,110 @@ export function UnitsScreen({ idMateria, onBack }) {
         </div>
       </div>
 
-      {contenidoMateria.secciones.map((seccion, secIndex) => (
-        <div
-          key={seccion.id}
-          className="mb-8"
-          ref={(el) => (sectionRefs.current[secIndex] = el)}
-        >
-          <div className="px-6 py-8 " style={{ marginTop: secIndex === 0 ? "7rem" : 0 }}>
-            <div className="max-w-xs mx-auto flex flex-col items-center">
-              {seccion.niveles && seccion.niveles.length > 0 ? (
-                seccion.niveles.map((nivel, index) => {
-                  const unlocked = Boolean(nivel.desbloqueado);
-                  const isLocked = !unlocked;
-                  const isActive = activeUnit?.id === nivel.id;
 
-                  const snakeClass =
-                    snakePathClasses[index % snakePathClasses.length];
+      {/* contenido road map */}
+      <div className="flex-1 overflow-auto min-h-0 from-background to-muted/30 pb-28 px-3 relative">
+        {contenidoMateria.secciones.map((seccion, secIndex) => (
+          <div
+            key={seccion.id}
+            className="mb-8"
+            ref={(el) => (sectionRefs.current[secIndex] = el)}
+          >
+            <div
+              className="px-6 py-8 "
+              style={{ marginTop: secIndex === 0 ? "1rem" : 0 }}
+            >
+              <div className="max-w-xs mx-auto flex flex-col items-center">
+                {seccion.niveles && seccion.niveles.length > 0 ? (
+                  seccion.niveles.map((nivel, index) => {
+                    const unlocked = Boolean(nivel.desbloqueado);
+                    const isLocked = !unlocked;
+                    const isActive = activeUnit?.id === nivel.id;
 
-                  const zIndexClass = isActive ? "z-40" : "z-0";
+                    const snakeClass =
+                      snakePathClasses[index % snakePathClasses.length];
 
-                  return (
-                    <div
-                      key={nivel.id}
-                      className={`mb-8 last:mb-0 w-full flex justify-center ${snakeClass} transition-transform duration-300 ${zIndexClass}`}
-                    >
+                    const zIndexClass = isActive ? "z-40" : "z-0";
+
+                    return (
                       <div
-                        className="flex flex-col items-center relative"
-                        ref={isActive ? containerRef : null}
+                        key={nivel.id}
+                        className={`mb-8 last:mb-0 w-full flex justify-center ${snakeClass} transition-transform duration-300 ${zIndexClass}`}
                       >
-                        {unlocked && !nivel.completado  && (
-                          <div className="absolute -top-10 bg-card p-2 rounded-md shadow-md animate-float z-30">
-                            <span className="font-extrabold text-sm text-pink-600">
-                              EMPEZAR
-                            </span>
-                            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-t-8 border-t-card border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
-                          </div>
-                        )}
-
-                        <ButtonUnits
-                          onClick={() =>
-                            unlocked &&
-                            setActiveUnit((prev) =>
-                              prev?.id === nivel.id ? null : nivel
-                            )
-                          }
-                          disabled={isLocked}
-                          completed={nivel.completado}
-                        />
-
-                        {index !== 0 &&
-                          (snakeClass === "-translate-x-34" ||
-                            snakeClass === "translate-x-0") && (
-                            <div
-                              className={`absolute ${
-                                snakeClass === "-translate-x-34"
-                                  ? "translate-x-96"
-                                  : "-translate-x-60"
-                              } w-3xs -translate-y-20`}
-                            >
-                              <RandomImage snakeClass={snakeClass} />
+                        <div
+                          className="flex flex-col items-center relative"
+                          ref={isActive ? containerRef : null}
+                        >
+                          {unlocked && !nivel.completado && (
+                            <div className="absolute -top-10 bg-card p-2 rounded-md shadow-md animate-float z-30">
+                              <span className="font-extrabold text-sm text-pink-600">
+                                EMPEZAR
+                              </span>
+                              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-t-8 border-t-card border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
                             </div>
                           )}
 
-                        {isActive && (
-                          <Tarjet
-                            unidad_id={nivel.id}
-                            dificultad={nivel.dificultad}
-                            title={nivel.nombre}
-                            description={nivel.descripcion || ""}
-                            exp={nivel.exp_base || 0}
+                          <ButtonUnits
+                            onClick={() =>
+                              unlocked &&
+                              setActiveUnit((prev) =>
+                                prev?.id === nivel.id ? null : nivel
+                              )
+                            }
+                            disabled={isLocked}
+                            completed={nivel.completado}
                           />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="text-center text-sm opacity-80">
-                  No hay niveles disponibles en esta sección
-                </div>
-              )}
-            </div>
-          </div>
 
-          {secIndex < contenidoMateria.secciones.length - 1 && (
-            <div className="w-full flex items-center justify-center my-6">
-              <div className="relative w-full">
-                <div className="border-t border-border-secundary w-full" />
-                <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-3">
-                  <span className="text-sm font-extrabold opacity-50 uppercase">
-                    SECCIÓN {secIndex + 2}:{" "}
-                   
-                  </span>
-                </div>
+                          {index !== 0 &&
+                            (snakeClass === "-translate-x-34" ||
+                              snakeClass === "translate-x-0") && (
+                              <div
+                                className={`absolute ${
+                                  snakeClass === "-translate-x-34"
+                                    ? "translate-x-96"
+                                    : "-translate-x-60"
+                                } w-3xs -translate-y-20`}
+                              >
+                                <RandomImage snakeClass={snakeClass} />
+                              </div>
+                            )}
+
+                          {isActive && (
+                            <Tarjet
+                              unidad_id={nivel.id}
+                              dificultad={nivel.dificultad}
+                              title={nivel.nombre}
+                              description={nivel.descripcion || ""}
+                              exp={nivel.exp_base || 0}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-center text-sm opacity-80">
+                    No hay niveles disponibles en esta sección
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      ))}
+
+            {secIndex < contenidoMateria.secciones.length - 1 && (
+              <div className="w-full flex items-center justify-center my-6">
+                <div className="relative w-full">
+                  <div className="border-t border-border-secundary w-full" />
+                  <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-3">
+                    <span className="text-sm font-extrabold opacity-50 uppercase">
+                      SECCIÓN {secIndex + 2}:{" "}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

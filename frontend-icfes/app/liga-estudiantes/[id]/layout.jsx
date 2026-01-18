@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { TopHeader } from "@/components/navigation/top-header";
 import { TopHeaderRight } from "@/components/navigation/top-header-right";
 import { BottomNav } from "@/components/navigation/bottom-nav";
@@ -23,7 +22,7 @@ export default function LigaIdLayout({ children }) {
         </aside>
 
         {/* PAGE CONTENT */}
-        <main className="container max-w-2xl mx-auto px-4 flex-1 flex flex-col overflow-auto min-h-0 lg:pt-0">
+        <main className="container max-w-2xl mx-auto px-4 flex-1 flex flex-col overflow-auto min-h-0 lg:pt-4">
           {children}
         </main>
 

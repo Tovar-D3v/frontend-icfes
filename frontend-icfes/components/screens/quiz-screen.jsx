@@ -9,7 +9,13 @@ import Relacion from "@/components/screens/tipos-preguntas/relacion";
 
 function stripHTML(html) {
   if (!html) return "";
-  return html.replace(/<[^>]*>?/gm, "");
+  try {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  } catch (e) {
+    return html.replace(/<[^>]*>?/gm, "");
+  }
 }
 
 function toEmbedUrl(url) {
@@ -51,9 +57,9 @@ export function QuizScreen({
   onCheckAnswer,
   onContinueQuiz,
   onExit,
+  validacionRespuesta
 }) {
   const { speak, cancel } = useSpeechSynthesis();
-  console.log("QuizScreen render with quizState:", quizState);
   const activeQuiz = quizState;
 
   const [relacionComplete, setRelacionComplete] = useState(false);
@@ -89,13 +95,25 @@ export function QuizScreen({
     ? `Tu respuesta no coincide con el significado correcto. "${respuestaCorrecta}" es la opción adecuada porque se ajusta al contexto de la pregunta.`
     : "";
 
+  // Preferir explicación/video/respuestas desde validacionRespuesta si vienen
+  const explicacionFinal =
+    validacionRespuesta?.explicacion ?? explicacion ?? generatedExplicacion;
+  const videoFinal = validacionRespuesta?.video_url ?? videoExplicacion;
+  const respuestasCorrectas =
+    validacionRespuesta?.respuesta_correcta?.opciones_correctas ?? [];
+
   const leerPreguntaYOpciones = () => {
     cancel();
 
     const textoPregunta = stripHTML(currentQuestion.texto);
 
     const textoOpciones = currentQuestion.opciones
-      .map((opcion, index) => `Opción ${index + 1}: ${opcion.texto}`)
+      .map((opcion, index) => {
+        // algunas opciones pueden venir en texto o en contenido_html
+        const raw = opcion.texto ?? opcion.contenido_html ?? String(opcion);
+        const limpio = stripHTML(raw);
+        return `Opción ${index + 1}: ${limpio}`;
+      })
       .join(". ");
 
     const textoCompleto = `${textoPregunta}. ${textoOpciones}`;
@@ -147,6 +165,8 @@ export function QuizScreen({
             showFeedback={showFeedback}
             onSelectAnswer={onSelectAnswer}
             onPairsChange={setRelacionComplete}
+            validacionRespuesta={validacionRespuesta}
+            isCorrect={isCorrect}
           />
         ) : (
           <UnicaRespuesta
@@ -154,6 +174,7 @@ export function QuizScreen({
             selectedAnswer={selectedAnswer}
             showFeedback={showFeedback}
             onSelectAnswer={onSelectAnswer}
+            isCorrect={isCorrect}
           />
         )}
       </div>
@@ -171,24 +192,43 @@ export function QuizScreen({
               </div>
             ) : (
               <div>
-                <p className="text-red-500 font-bold text-lg mb-1">
-                  Solución correcta: {}
-                </p>
+                <div className="mb-2">
+                  <p className="text-red-500 font-bold text-lg mb-1">Solución correcta:</p>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {respuestasCorrectas.length > 0 ? (
+                      respuestasCorrectas.map((opt, idx) => (
+                        <div
+                          key={idx}
+                          className=" border-card quiz-option-selected px-4 rounded-sm"
+                        >
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: opt.contenido_html ?? opt.texto ?? String(opt),
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-white/60">No hay respuesta correcta disponible.</div>
+                    )}
+                  </div>
 
-                <div className="flex items-center gap-4 flex-col max-h-72 overflow-y-auto custom-scroll">
-                  <div dangerouslySetInnerHTML={{ __html: explicacion || generatedExplicacion }} />
-                  {videoExplicacion && (
-                    <div className=" w-full min-h-60 flex justify-center items-center">
-                      <iframe
-                        src={toEmbedUrl(videoExplicacion)}
-                        title="Video Explicación"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className=" w-full min-h-60 rounded-sm"
-                      ></iframe>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-4 flex-col max-h-72 overflow-y-auto custom-scroll">
+                    <div dangerouslySetInnerHTML={{ __html: explicacionFinal }} />
+
+                    {videoFinal && (
+                      <div className=" w-full min-h-60 flex justify-center items-center">
+                        <iframe
+                          src={toEmbedUrl(videoFinal)}
+                          title="Video Explicación"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className=" w-full min-h-60 rounded-sm"
+                        ></iframe>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

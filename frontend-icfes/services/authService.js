@@ -13,12 +13,14 @@ export async function login(email, password) {
 
     if (!response.ok) throw new Error(data.error || "Error al iniciar sesión");
 
+    // Guardar en localStorage para persistencia (el componente actualizará el contexto)
     localStorage.setItem("token", data.access);
     localStorage.setItem("refresh", data.refresh);
     localStorage.setItem("usuario", JSON.stringify(data.user));
     localStorage.setItem("role", data.role);
 
-    return data.user;
+    // Retornar los datos para que el componente que llamó pueda invocar setTokens()
+    return { user: data.user, access: data.access, refresh: data.refresh, role: data.role };
   } catch (error) {
     throw error;
   }

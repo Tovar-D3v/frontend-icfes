@@ -23,7 +23,7 @@ export default function DashboardIdLayout({ children }) {
         </aside>
 
         {/* PAGE CONTENT */}
-        <main className="container max-w-2xl mx-auto px-4 flex-1 flex flex-col overflow-auto min-h-0 lg:pt-0">
+        <main className="container max-w-2xl mx-auto px-2 flex-1 flex flex-col overflow-auto min-h-0 lg:pt-0">
           {children}
         </main>
 

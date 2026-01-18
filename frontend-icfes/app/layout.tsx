@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono, M_PLUS_Rounded_1c } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-
+import { AuthProvider } from "@/context/auth-context";
 // IMPORTANTE → Importa tu ThemeProvider
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
@@ -43,11 +43,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="dark">
-      <body className={`${mPlusRounded.className} antialiased`}>
+      <body className={` bg-background`}>
         
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
 
         <Analytics />
       </body>

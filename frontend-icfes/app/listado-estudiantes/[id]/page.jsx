@@ -154,7 +154,7 @@ export default function ListadoEstudiantesPage() {
                   Promedio:{" "}
                   {typeof promedio === "number"
                     ? promedio.toFixed(1)
-                    : "Sin promedio"}
+                    : "0.0"}
                 </div>
               </div>
 

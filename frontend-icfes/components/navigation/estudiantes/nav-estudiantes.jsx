@@ -47,7 +47,7 @@ export function NavEstudiantes({ router, pathname }) {
           />
 
           <NavButton
-            iconSrc="https://d35aaqx5ub95lt.cloudfront.net/vendor/e93ac282acf802a6258c761d3e9f9888.svg"
+            iconSrc="https://res.cloudinary.com/dulrdwjul/image/upload/v1765422409/27_sin_ti%CC%81tulo_20251210215809_jdgpgr.png"
             label="Perfil"
             active={currentScreen === "profile"}
             onClick={() => {

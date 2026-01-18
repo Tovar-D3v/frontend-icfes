@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sun, MoonStar } from "lucide-react";
+import { Sun, MoonStar, X } from "lucide-react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import config from "@/config/config";
+import CursosTopHeader from "@/components/navigation/profesores/cursos-topheader";
+import { useAuth } from "@/context/auth-context";
 
 export function TopHeader() {
   const [racha, setRacha] = useState(0);
   const [role, setRole] = useState(null);
   const [asignacionObj, setAsignacionObj] = useState(null);
-
-  const { isDarkMode, toggleTheme } = useTheme();
+  const [openDrawerTop, setOpenDrawerTop] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -21,29 +24,16 @@ export function TopHeader() {
     } catch (e) {
       setAsignacionObj(null);
     }
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    const fetchRacha = async () => {
-      const storedUser =
-        typeof window !== "undefined" ? localStorage.getItem("user") : null;
-      if (storedUser) {
-        const userId = JSON.parse(storedUser).id;
-
-        try {
-          const response = await fetch(
-            `${config.API_BASE_URL}/api/racha/${userId}`
-          );
-          const data = await response.json();
-          setRacha(data.racha || 0);
-        } catch (error) {
-          console.error("Error al obtener la racha:", error);
-        }
-      }
-    };
-
-    fetchRacha();
-  }, []);
+    if (user) {
+      setRacha(user.racha_actual ?? 0);
+    } else {
+      setRacha(0);
+    }
+  }, [user]);
 
   return (
     <header className="sticky top-0 z-999 bg-background">
@@ -60,17 +50,20 @@ export function TopHeader() {
           </span>
         </div>
 
-        {role === "PROFESOR" ? (
+        {mounted && (role === "PROFESOR" ? (
           <div className="flex items-center border-card rounded-2xl gap-1">
-            <div className="px-4 py-1.5 rounded-full text-right flex items-center gap-2 ">
+            <button
+              className="px-4 py-1.5 rounded-full text-right flex items-center gap-2 cursor-pointer"
+              onClick={() => setOpenDrawerTop(!openDrawerTop)}
+            >
               <div className="text-sm">CURSO</div>
               <div className="text-sm ">{asignacionObj?.curso ?? "—"}</div>
-            </div>
+            </button>
           </div>
         ) : (
           <div className="flex items-center gap-1">
             <div className="flex items-center gap-2 px-4 py-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-full">
-              {racha == 0 ? (
+              {racha > 0 ? (
                 <img
                   src="https://d35aaqx5ub95lt.cloudfront.net/images/profile/8a6dca76019d059a81c4c7c1145aa7a4.svg"
                   alt=""
@@ -84,12 +77,30 @@ export function TopHeader() {
                 />
               )}
               <span className="text-sm font-bold text-orange-700 dark:text-orange-400">
-                3 d
+                {racha || 0} d
               </span>
             </div>
           </div>
-        )}
+        ))}
       </div>
+
+      {/* Drawer Top */}
+
+      {openDrawerTop && (
+        <div className="fixed top-0 left-0 w-full h-[55vh] md:h-[42vh] bg-background shadow-lg z-50 p-4 rounded-b-2xl">
+          <button
+            className="absolute top-4 right-4 p-2 hover:bg-gray-200 rounded-2xl z-10"
+            onClick={() => setOpenDrawerTop(false)}
+          >
+            <X className="w-6 h-6 text-gray-400" />
+          </button>
+
+          {/* contenido drawer */}
+          <div className=" mt-5">
+            <CursosTopHeader />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

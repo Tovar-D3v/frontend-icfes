@@ -17,8 +17,8 @@ export default function Relacion({
   showFeedback,
   onSelectAnswer,
   onPairsChange,
+  validacionRespuesta
 }) {
-  console.log("opciones", opciones);
   const containerRef = useRef(null);
   const leftRefs = useRef({});
   const rightRefs = useRef({});

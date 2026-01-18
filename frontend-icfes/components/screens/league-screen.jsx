@@ -1,27 +1,68 @@
 import { Trophy, Crown, TrendingUp } from "lucide-react";
 import { MOCK_LEAGUE_USERS, LEAGUES } from "@/lib/constants";
+import { getRankingColegio } from "@/services/estudiante/apiRankingService";
+import Avatar from "react-nice-avatar";
+import { useEffect, useState } from "react";
 
 export function LeagueScreen() {
-  const currentUser = MOCK_LEAGUE_USERS.find((u) => u.isCurrentUser);
+  const [rankingData, setRankingData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    getRankingColegio()
+      .then((data) => {
+        if (!mounted) return;
+        setRankingData(data);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        setError(err);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => (mounted = false);
+  }, []);
+
+  const users = rankingData?.ranking ?? [];
+  const currentUser = users.find((u) => u.es_usuario_actual);
   const currentLeague = currentUser
-    ? LEAGUES.find(
-        (l) => currentUser.xp >= l.minXp && currentUser.xp <= l.maxXp
-      )
+    ? LEAGUES.find((l) => currentUser.exp >= l.minXp && currentUser.exp <= l.maxXp) ||
+      LEAGUES.find((l) => l.name === currentUser.liga)
     : null;
   const nextLeague = currentUser
-    ? LEAGUES.find((l) => l.minXp > currentUser.xp)
+    ? LEAGUES.find((l) => l.minXp > (currentUser.exp ?? 0))
     : null;
 
-
+  if (loading) return <div className=" min-h-screen flex flex-col justify-center items-center">Cargando ranking...</div>;
+  if (error) return <div>Error al cargar el ranking.</div>;
   if (!currentUser || !currentLeague) {
     return <div>Error: No se pudo cargar la información de la liga.</div>;
   }
 
+  const initials = (name = "") =>
+    (name || "")
+      .split(" ")
+      .filter(Boolean)
+      .map((p) => p[0]?.toUpperCase())
+      .slice(0, 2)
+      .join("");
+
+  const parseAvatarStyle = (s) => {
+    if (!s) return null;
+    try {
+      return JSON.parse(s.replace(/'/g, '"'));
+    } catch (e) {
+      return null;
+    }
+  };
+
   return (
     <div className="px-3 py-3 pb-24">
-      {/* Nueva sección de ligas con diseño mejorado */}
       <div className=" rounded-2xl p-6">
-        {/* Iconos de ligas */}
         <div className="flex justify-center items-center ">
           {LEAGUES.map((league, index) => (
             <div key={league.name} className="flex flex-col items-center">
@@ -43,68 +84,74 @@ export function LeagueScreen() {
         </div>
 
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">División Oro</h2>
+          <h2 className="text-2xl font-bold mb-2">{currentLeague.name}</h2>
           <p className=" text-sm">
-            Los primeros 10 avanzan a la siguiente división
+            {rankingData?.colegio ?? ""} — {rankingData?.total_estudiantes ?? ""} estudiantes
           </p>
-          <div className="mt-1 px-4 py-1 rounded-full text-xl font-bold inline-block">
-            4 días
-          </div>
         </div>
       </div>
 
       <div className=" ">
         <div className="space-y-2">
-          {MOCK_LEAGUE_USERS.map((user, index) => (
+          {users.map((user) => (
             <div
-              key={user.id}
+              key={user.username}
               className={`flex items-center gap-3 p-3 py-2 rounded-xl transition-all ${
-                user.isCurrentUser
+                user.es_usuario_actual
                   ? "bg-primary/10 border-2 border-primary"
                   : "bg-accent hover:bg-accent/70"
               }`}
             >
               <div className="w-8 h-8 flex items-center justify-center font-bold text-foreground">
-                {index === 0 ? (
+                {user.posicion === 1 ? (
                   <img
                     src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/9e4f18c0bc42c7508d5fa5b18346af11.svg"
                     alt=""
                   />
-                ) : index === 1 ? (
+                ) : user.posicion === 2 ? (
                   <img
                     src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/cc7b8f8582e9cfb88408ab851ec2e9bd.svg"
                     alt=""
                   />
-                ) : index === 2 ? (
+                ) : user.posicion === 3 ? (
                   <img
                     src="https://d35aaqx5ub95lt.cloudfront.net/images/leagues/eef523c872b71178ef5acb2442d453a2.svg"
                     alt=""
                   />
                 ) : (
-                  `${index + 1}`
+                  `${user.posicion}`
                 )}
               </div>
 
-              <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-primary bg-muted-foreground/20`}
-              >
-                {user.avatar}
+              <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center font-bold text-primary bg-muted-foreground/20">
+                {user.avatar_style ? (
+                  (() => {
+                    const cfg = parseAvatarStyle(user.avatar_style);
+                    return cfg ? (
+                      <Avatar {...cfg} className="w-12 h-12" />
+                    ) : (
+                      <span>{initials(user.nombre_completo)}</span>
+                    );
+                  })()
+                ) : (
+                  <span>{initials(user.nombre_completo)}</span>
+                )}
               </div>
 
               <div className="flex-1">
                 <div
                   className={`font-bold ${
-                    user.isCurrentUser ? "text-primary" : "text-foreground"
+                    user.es_usuario_actual ? "text-primary" : "text-foreground"
                   }`}
                 >
-                  {user.name}
+                  {user.nombre_completo}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {user.xp} XP
+                  {user.exp} XP
                 </div>
               </div>
 
-              {user.isCurrentUser && (
+              {user.es_usuario_actual && (
                 <div className="px-2 py-1 bg-primary text-white text-xs font-bold rounded-full">
                   Tú
                 </div>

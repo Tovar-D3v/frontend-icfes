@@ -69,7 +69,6 @@ export function useQuiz(loadUserProgress) {
       });
   
       const data = await response.json();
-      console.log("➡️ Resultado de finalizar quiz:", data);
   
       return data;
     } catch (error) {
@@ -133,7 +132,6 @@ export function useQuiz(loadUserProgress) {
       totalPreguntas: questions.length,
     });
   
-    console.log("API Finalizar Quiz:", result);
   
     setQuizState({
       ...quizState,

@@ -50,23 +50,30 @@ export function ResultsScreen({ results, onContinue }) {
   return (
     <div className="max-w-xl mx-auto text-center min-h-screen px-3">
       <div
-        className={`min-h-screen flex justify-between items-center py-14 flex-col ${
+        className={`min-h-screen flex justify-between items-center py-5 flex-col gap-4 ${
           passed ? "border-primary" : ""
         }`}
       >
         <div className="flex flex-col">
-          <h2 className="text-3xl font-extrabold  mb-2">
+          <h2 className="text-3xl font-extrabold">
             {passed ? "Nivel Completado!" : "Necesitas Repasar"}
           </h2>
         </div>
 
         <div className="flex flex-col">
-          <div className=" my-6">
-            <img src="" alt="imagen personaje saltando de " />
-          </div>
-
-          <div className="text-xl text-muted-foreground mb-8">
-            {percentage}% Correcto
+          <div>
+            {passed ? (
+              <img
+                src="https://res.cloudinary.com/dulrdwjul/image/upload/v1768574542/IMG_7201_hzmtkf.webp"
+                alt="imagen personaje saltando de "
+                className=" w-96"
+              />
+            ) : (
+              <img
+                src="https://res.cloudinary.com/dulrdwjul/image/upload/v1768574542/IMG_7202_wjzv6l.webp"
+                alt="imagen personaje triste"
+              />
+            )}
           </div>
 
           {!passed && (
@@ -78,14 +85,14 @@ export function ResultsScreen({ results, onContinue }) {
           )}
         </div>
 
-        <div className=" grid grid-cols-2 gap-6 mb-8 w-full">
-          <div className="quiz-option-base w-full min-h-40">
+        <div className=" grid grid-cols-2 gap-6 w-full">
+          <div className="border-card w-full min-h-40 flex flex-col rounded-sm items-center justify-center quiz-option-default">
             <div className="text-2xl font-bold mb-2">Puntuación</div>
             <div className="text-4xl font-extrabold">
               {results?.puntuacion ?? results?.puntuacion ?? 0}
             </div>
           </div>
-          <div className="quiz-option-base w-full min-h-40">
+          <div className="border-card w-full min-h-40 flex flex-col rounded-sm items-center justify-center quiz-option-default">
             <div className="text-2xl font-bold mb-2">EXP total</div>
             <div className="text-4xl font-extrabold">
               {results?.exp_ganada ?? results?.exp_ganada ?? 0}
@@ -93,10 +100,7 @@ export function ResultsScreen({ results, onContinue }) {
           </div>
         </div>
 
-        <button
-          onClick={onContinue}
-          className="w-full py-3 rounded-sm font-extrabold transition-all bg-[#93d333] active:scale-[0.98] border-b-4 border-t-2 border-x-2 border-[#79b933] text-card"
-        >
+        <button onClick={onContinue} className=" border-card quiz-option-regular w-full rounded-3xl py-4">
           CONTINUAR
         </button>
       </div>

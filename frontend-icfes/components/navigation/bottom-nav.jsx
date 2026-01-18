@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { NavEstudiantes } from "./estudiantes/nav-estudiantes"
 import { NavProfesores } from "./profesores/nav-profesores"
+import { useAuth } from "@/context/auth-context";
 
 export function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [role, setRole] = useState(null);
+  const { user, accessToken, setTokens, logout } = useAuth();
 
   useEffect(() => {
     if (typeof window === "undefined") return;

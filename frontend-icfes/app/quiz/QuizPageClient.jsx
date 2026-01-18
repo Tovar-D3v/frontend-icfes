@@ -28,6 +28,7 @@ export default function QuizPage() {
   const [videoExplicacion, setVideoExplicacion] = useState(null);
   const [lives, setLives] = useState(3);
   const [loading, setLoading] = useState(true);
+  const [validacionRespuesta, setValidacionRespuesta] = useState(null);
 
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState(null);
@@ -94,7 +95,6 @@ export default function QuizPage() {
     setSelectedAnswer(value);
   }, [setSelectedAnswer]);
 
-  console.log("results:", results);
   const onCheckAnswer = async () => {
     if (selectedAnswer === null) return;
 
@@ -106,7 +106,6 @@ export default function QuizPage() {
         question.tipo_pregunta &&
         question.tipo_pregunta.toLowerCase().includes("relacion")
       ) {
-        // selectedAnswer ahora es el array de conexiones desde <Relacion />
         response = await validarRespuesta(intentoId, question.id, selectedAnswer);
       } else {
         const option = question.opciones[selectedAnswer];
@@ -117,6 +116,7 @@ export default function QuizPage() {
         response = await validarRespuesta(intentoId, question.id, option.id);
       }
 
+      setValidacionRespuesta(response);
       setIsCorrect(response.es_correcta);
       setLives(response.vidas_restantes);
       setExplicacion(response.explicacion);
@@ -185,6 +185,7 @@ export default function QuizPage() {
       onCheckAnswer={onCheckAnswer}
       onContinueQuiz={onContinueQuiz}
       onExit={onExit}
+      validacionRespuesta={validacionRespuesta}
     />
   );
 }

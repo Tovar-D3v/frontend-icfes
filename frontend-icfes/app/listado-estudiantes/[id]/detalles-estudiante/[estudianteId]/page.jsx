@@ -2,7 +2,6 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Flame, User, TrendingUp, Star } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -13,7 +12,6 @@ import {
   ReferenceLine,
 } from "recharts";
 import { getInformacionEstudiante } from "../../../../../services/profesor/detalles-estudiante";
-import { resume } from "react-dom/server";
 
 export default function DetallesEstudiantePage() {
   const { id, estudianteId } = useParams();
@@ -27,9 +25,7 @@ export default function DetallesEstudiantePage() {
 
     getInformacionEstudiante(id, estudianteId)
       .then((res) => {
-        // Acomodar respuesta: puede venir como array u objeto; normalizar a la forma que usa la UI
         const result = Array.isArray(res) ? res[0] : res;
-        console.log("Detalles estudiante (raw):", result);
         if (!result) {
           setError("No se encontró información del estudiante");
           return;
@@ -39,7 +35,6 @@ export default function DetallesEstudiantePage() {
         const resumen = result.resumen_materia ?? {};
 
         const normalized = {
-          // nombre completo lo guardamos en first_name para mantener compatibilidad
           usuario__first_name: estudiante.nombre ?? estudiante.first_name ?? "",
           usuario__last_name: "", // no viene separado
           usuario__username: estudiante.username ?? estudiante.user ?? "",
@@ -48,7 +43,6 @@ export default function DetallesEstudiantePage() {
             resumen.niveles_intentados ?? resumen.niveles_intentados ?? "—",
           total_exp: estudiante.exp_total ?? estudiante.total_exp ?? 0,
           racha_actual: estudiante.racha_actual ?? estudiante.streak ?? 0,
-          // mantener datos adicionales por si los necesitas en la vista
           debilidades_y_fortalezas: result.debilidades_y_fortalezas ?? [],
           ultimos_intentos: result.ultimos_intentos ?? [],
         };
@@ -142,14 +136,13 @@ export default function DetallesEstudiantePage() {
       </div>
 
       {/* Gráfico */}
-      <div className="card-base flex-col gap-4">
+      <div className="card-base border-card flex-col gap-4">
         <h3 className="text-lg font-bold">Desempeño frente a meta ICFES</h3>
         <div className="w-full h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <XAxis dataKey="name" />
               <YAxis domain={[0, 100]} />
-              <Tooltip />
               <ReferenceLine
                 y={60}
                 stroke="var(--color-duolingo-green)"

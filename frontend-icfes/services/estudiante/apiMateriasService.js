@@ -10,7 +10,6 @@ export async function getMaterias() {
     
     return await res.json();
   } catch (error) {
-    console.error("Error cargando materias:", error);
     throw error;
   }
 }

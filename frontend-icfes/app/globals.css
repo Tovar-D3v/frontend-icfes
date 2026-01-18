@@ -87,8 +87,8 @@
   --border-button: #0003;
   --border-default: #d1d5db42;
 
-    /* Colores */
-    --color-text-green: #79b933;
+  /* Colores */
+  --color-text-green: #79b933;
 }
 
 @theme inline {
@@ -146,6 +146,7 @@
   * {
     @apply outline-ring/50;
   }
+
   body {
     @apply text-foreground font-bold;
   }
@@ -153,9 +154,12 @@
 
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -223,19 +227,20 @@
 
 
 .quiz-option-default {
-  background-color: transparent; 
+  background-color: transparent;
   border-color: var(--color-border-secundary);
 }
 
 .quiz-option-default:hover {
-  background-color: var(--color-accent-hover); 
+  background-color: var(--color-accent-hover);
   cursor: pointer;
 }
 
 .quiz-option-selected {
-  background-color: rgba(88, 204, 2, 0.1); 
+  background-color: rgba(88, 204, 2, 0.1);
   border-color: var(--color-duolingo-green);
 }
+
 .quiz-option-selected:hover {
   background-color: rgba(88, 204, 2, 0.1);
 }
@@ -248,12 +253,23 @@
 
 
 .quiz-option-regular {
-  background-color: rgba(255, 199, 0, 0.1); 
+  background-color: rgba(255, 199, 0, 0.1);
   border-color: var(--color-duolingo-yellow);
 }
 
+.quiz-option-blue-selected {
+  background-color: rgba(0, 112, 243, 0.1);
+  border-color: #0070f3
+}
+
+
+.quiz-option-white-selected {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #fff
+}
+
 .quiz-option-incorrect-selected {
-  background-color: rgba(255, 71, 71, 0.1); 
+  background-color: rgba(255, 71, 71, 0.1);
   border-color: var(--color-duolingo-red);
 }
 
@@ -265,11 +281,39 @@
 }
 
 .custom-scroll {
-  scrollbar-width: thin; /* Firefox: hace el scrollbar más estrecho */
-  scrollbar-color: #c4c4c4 transparent; /* thumb color y track color en Firefox */
+  scrollbar-width: thin;
+  /* Firefox: hace el scrollbar más estrecho */
+  scrollbar-color: #c4c4c4 transparent;
+  /* thumb color y track color en Firefox */
 }
 
 .custom-scroll::-webkit-scrollbar {
-  width: 8px; /* ancho del scrollbar */
+  width: 8px;
+  /* ancho del scrollbar */
   height: 8px;
 }
+
+/* :where(.css-dev-only-do-not-override-1iph5z3).ant-rate .ant-rate-star-first,
+:where(.css-dev-only-do-not-override-1iph5z3).ant-rate .ant-rate-star-second {
+  color: rgb(106 106 106 / 85%) !important;
+} */
+
+
+.css-var-root.ant-rate {
+  --ant-rate-star-color: #fadb14;
+  --ant-rate-star-size: 20px;
+  --ant-rate-star-size-sm: 15px;
+  --ant-rate-star-size-lg: 25px;
+  --ant-rate-star-hover-scale: scale(1.1);
+  --ant-rate-star-bg: rgb(106 106 106 / 85%) !important;
+}
+
+
+/* Evita que el hover del .card-base cambie el fondo cuando tiene la clase .no-hover */
+.no-hover:hover {
+  background-color: unset !important;
+  /* si el hover aplica más propiedades (bordes/sombra), anularlas también si es necesario */
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+

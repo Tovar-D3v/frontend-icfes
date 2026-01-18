@@ -26,10 +26,15 @@ export function NavProfesores({ router, pathname }) {
     currentScreen = "dashboard";
   } else if (pathname.startsWith("/liga-estudiantes") || pathname.startsWith("/liga")) {
     currentScreen = "liga";
-  } else if (pathname.startsWith("/estudiantes")) {
+  } else if (
+    pathname.startsWith("/estudiantes") ||
+    pathname.startsWith("/listado-estudiantes")
+  ) {
     currentScreen = "estudiantes";
   } else if (pathname.startsWith("/perfil")) {
     currentScreen = "profile";
+  } else if (pathname.startsWith("/chat-ia-profesores")) {
+    currentScreen = "chat-ia-profesores";
   }
 
   return (
@@ -58,6 +63,14 @@ export function NavProfesores({ router, pathname }) {
             active={currentScreen === "estudiantes"}
             onClick={() => {
               router.push(cursoId ? `/listado-estudiantes/${cursoId}` : "/estudiantes");
+            }}
+          />
+          <NavButton
+            iconSrc={"https://careers.duolingo.com/8cecd2f961a125291dc5.svg"}
+            label="Chat IA"
+            active={currentScreen === "chat-ia-profesores"}
+            onClick={() => {
+              router.push("/chat-ia-profesores");
             }}
           />
 
